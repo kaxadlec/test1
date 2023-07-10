@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>투표생성</title>
+</head>
+<body>
+    <div>
+        <h3> 투표만들기</h3>
+        <form action="#">
+            <div>
+                <label> 질문내용
+                    <input type="text" id= "question" name= "question" placeholder= "질문을 작성해주세요">
+                </label>
+            </div>
+            <div>
+                <label> 답변항목
+                    <button type= "button" id="btn-add">추가</button>
+                </label>
+            </div>
+            <div id="poll-answer-list">
+                <div class="poll-answer-item">
+                    <input type="text" name="answer"/>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="btn-make">투표생성</button>
+            </div>
+        </form>
+        </div>  
+    <script>
+        window.onload = function(){
+            //답변 항목추가
+            document.querySelector("#btn-add").addEventListener("click", function(){
+                /*
+                <div class="poll-answer-item">
+                    <input type="text" name=answer/>
+                    <button>삭제</button>
+                </div>
+                */
+                var listDiv = document.createElement("div"); // <div></div>
+                listDiv.setAttribute("class","poll-answer-item"); //<div class = "poll-answer-item"></div>
+                
+                var inputEl = document.createElement("input");
+                inputEl.setAttribute("type","text");
+                inputEl.setAttribute("name","answer");
+
+                var btnEl = document.createElement("button");
+                btnEl.setAttribute("type","button");
+
+                //항목 리스트를 포함하는 부모 엘리먼트 불러오기
+                var listEl = document.getElementById("poll-answer-list");
+                btnEl.addEventListener("click",function(){
+                    var par = this.parentNode;
+                    listEl.removeChild(par);
+                })
+                btnEl.appendChild(document.createTextNode("삭제")); //<button>삭제</button>
+                listDiv.appendChild(inputEl);
+                listDiv.appendChild(btnEl);
+                listEl.appendChild(listDiv);
+            }) 
+            
+            // 투표 만들기 이벤트
+            document.getElementById("btn-make").addEventListener("click",function(){
+                // 질문 입력 input에서 질문 내용(value)만 뽑아오기
+                var question = document.querySelector("#question").value;
+                console.log(question)
+                // 같은 name 속성을 가진 응답 input들 한번에 가져오기
+                var answers = document.getElementsByName("answer");
+                console.log(answers)
+                var answersArr = [];
+                // 응답 input nodelist에서 value만 뽑아서 배열에 담아주기
+                for(var i=0; i<answers.length;i++){
+                    answersArr.push(answers[i].value);
+                }
+                console.log(answersArr);
+
+                // 오픈한 창에 반영하기 위해서 localStorage에 저장 
+                localStorage.setItem("question",question);
+                localStorage.setItem("answers", JSON.stringify(answersArr));
+                opener.location.reload();
+                self.close();
+            })
+        }
+    </script>
+</body>
+</html>
